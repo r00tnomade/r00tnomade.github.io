@@ -6,16 +6,13 @@ import StoryCard from '../components/StoryCard.astro';
 import Greeting from '../components/visuals/Greeting.astro';
 import Harmonics from '../components/visuals/Harmonics.astro';
 import Feature from '../components/Feature.astro';
-import Tile from '../components/Tile.astro';
 import Affiliations from '../components/Affiliations.astro';
 import Contact from '../components/Contact.astro';
 import Footer from '../components/Footer.astro';
 import { about, focus, projects, research, site, social } from '../content/site';
 import { projectMeta } from '../lib/projects';
 
-const [lead, ...rest] = projects;
-const rows = rest.slice(0, 2);
-const tiles = rest.slice(2);
+const [lead] = projects;
 
 const jsonLd = {
   '@context': 'https://schema.org',
@@ -94,27 +91,6 @@ const jsonLd = {
             />
           )
         }
-        {
-          rows.map((p, i) => (
-            <StoryCard
-              title={p.title}
-              body={[p.summary]}
-              image={p.image}
-              meta={projectMeta(p)}
-              href={`/work/${p.slug}/`}
-              reverse={i % 2 === 1}
-            />
-          ))
-        }
-        {
-          tiles.length > 0 && (
-            <div class="tiles">
-              {tiles.map((p) => (
-                <Tile title={p.title} body={p.summary} image={p.image} meta={projectMeta(p)} href={`/work/${p.slug}/`} />
-              ))}
-            </div>
-          )
-        }
       </div>
     </section>
 
@@ -190,12 +166,6 @@ const jsonLd = {
     font-size: 0.9375rem;
   }
 
-  .tiles {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: var(--section-gap);
-  }
-
   @media (max-width: 799px) {
     .focus__grid {
       grid-template-columns: 1fr;
@@ -205,8 +175,7 @@ const jsonLd = {
       white-space: normal;
     }
 
-    .directions__list,
-    .tiles {
+    .directions__list {
       grid-template-columns: 1fr;
     }
   }

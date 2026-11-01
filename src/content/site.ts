@@ -4,9 +4,8 @@
  * - Text wrapped in todo('…') is placeholder copy. It renders in a muted,
  *   dashed style on the site so it is easy to spot. Replace it with a plain
  *   string when the final text is ready.
- * - Image paths are relative to src/assets/images/. To swap a placeholder,
- *   replace the file with your own image under the same name (see
- *   ASSETS_NEEDED.md). If the format changes (e.g. .jpg), update the path here.
+ * - Image paths are relative to src/assets/images/ and must be WebP/AVIF
+ *   (PNG for logos). To swap an image, replace the file under the same name.
  */
 
 export type Copy = string | { todo: string };
@@ -68,8 +67,7 @@ export const hero = {
 };
 
 /**
- * Logo strip beneath the hero. Files are white, transparent derivatives built by
- * `node scripts/prepare-logos.mjs` from the uploaded originals in the project root.
+ * Logo strip beneath the hero (white, transparent PNGs in src/assets/images/logos/).
  * `height` is the desktop display height in px; widths follow each logo's own ratio,
  * so tune it per logo until both carry the same visual weight.
  */
@@ -222,75 +220,8 @@ export interface Project {
   sections: Section[];
 }
 
-const detailPlaceholders = (name: string): Project['sections'] => [
-  { heading: 'Overview', body: [todo(`What ${name} is, the problem it addresses and who it is for.`)] },
-  { heading: 'My contribution', body: [todo('What you personally designed and built, and what was done by others.')] },
-  { heading: 'Approach', body: [todo('Key technical decisions, architecture and the reasoning behind them.')] },
-  { heading: 'Status and next steps', body: [todo('Where the project stands today and what is planned next.')] },
-];
-
-/**
- * Every project's content is kept here. Only the slugs in `published` appear on
- * the website (home page and /work/<slug>/ pages); the rest are not built,
- * linked or shipped. To publish another project, add its slug to `published`.
- *
- * Order matters: the first published project is shown as a large feature, the
- * next two as image-and-text rows, and any remaining ones as a pair of tiles.
- */
-const allProjects: Project[] = [
-  {
-    slug: 'dynaptics-studio',
-    title: 'Dynaptics Studio',
-    summary: todo('One or two sentences on what Dynaptics Studio is and what you built.'),
-    ownership: 'tbd',
-    status: 'tbd',
-    role: todo('Your role'),
-    period: todo('Year'),
-    tools: todo('Main technologies'),
-    image: { src: 'projects/dynaptics-studio.webp', alt: 'Dynaptics Studio' },
-    sections: detailPlaceholders('Dynaptics Studio'),
-  },
-  {
-    slug: 'cloudspill',
-    title: 'CloudSpill',
-    summary:
-      'A static security analysis engine for infrastructure as code. CloudSpill parses Terraform configurations and Dockerfiles into a typed syntax tree, builds a graph of resource dependencies and uses taint analysis to trace how misconfigurations propagate.',
-    ownership: 'personal',
-    status: 'tbd',
-    role: 'Design and development',
-    period: todo('Year'),
-    tools: 'Python, Terraform, Docker',
-    image: { src: 'projects/cloudspill.webp', alt: 'CloudSpill logo' },
-    links: [{ label: 'Source on GitHub', href: 'https://github.com/SamiAdamMoughli/CloudSpill' }],
-    sections: [
-      {
-        heading: 'Overview',
-        body: [
-          'CloudSpill is a static application security testing engine for infrastructure as code. Instead of matching patterns line by line, it reasons about the structure of an infrastructure definition.',
-        ],
-      },
-      {
-        heading: 'Approach',
-        body: [
-          'Terraform configurations and Dockerfiles are parsed into a typed abstract syntax tree. From there, CloudSpill builds a directed acyclic graph of resource dependencies and runs taint analysis over it, showing how a single misconfiguration can spread to the resources that depend on it.',
-          'Findings can be reported as a table, JSON or Markdown, filtered by severity and used to fail a CI pipeline above a chosen threshold.',
-        ],
-      },
-      { heading: 'Status and next steps', body: [todo('Where CloudSpill stands today and what is planned next.')] },
-    ],
-  },
-  {
-    slug: 'tactile-intelligence-platform',
-    title: 'Tactile Intelligence Platform',
-    summary: todo('One or two sentences on what the platform does and what you built.'),
-    ownership: 'tbd',
-    status: 'tbd',
-    role: todo('Your role'),
-    period: todo('Year'),
-    tools: todo('Main technologies'),
-    image: { src: 'projects/tactile-intelligence-platform.webp', alt: 'Tactile Intelligence Platform' },
-    sections: detailPlaceholders('the Tactile Intelligence Platform'),
-  },
+/** Projects shown in "Selected work", in order. Each one gets a page at /work/<slug>/. */
+export const projects: Project[] = [
   {
     slug: 'aeroagent',
     title: 'AeroAgent',
@@ -390,23 +321,7 @@ const allProjects: Project[] = [
       },
     ],
   },
-  {
-    slug: 'vesselx',
-    title: 'VesselX',
-    summary: todo('One sentence on what VesselX is.'),
-    ownership: 'tbd',
-    status: 'tbd',
-    role: todo('Your role'),
-    period: todo('Year'),
-    tools: todo('Main technologies'),
-    image: { src: 'projects/vesselx.webp', alt: 'VesselX' },
-    sections: detailPlaceholders('VesselX'),
-  },
 ];
-
-const published = ['aeroagent'];
-
-export const projects: Project[] = allProjects.filter((p) => published.includes(p.slug));
 
 export const contact = {
   title: 'Get in touch',

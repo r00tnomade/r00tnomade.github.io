@@ -1,0 +1,213 @@
+---
+import Base from '../layouts/Base.astro';
+import Hero from '../components/Hero.astro';
+import SectionHead from '../components/SectionHead.astro';
+import StoryCard from '../components/StoryCard.astro';
+import Greeting from '../components/visuals/Greeting.astro';
+import Harmonics from '../components/visuals/Harmonics.astro';
+import Feature from '../components/Feature.astro';
+import Tile from '../components/Tile.astro';
+import Affiliations from '../components/Affiliations.astro';
+import Contact from '../components/Contact.astro';
+import Footer from '../components/Footer.astro';
+import { about, focus, projects, research, site, social } from '../content/site';
+import { projectMeta } from '../lib/projects';
+
+const [lead, ...rest] = projects;
+const rows = rest.slice(0, 2);
+const tiles = rest.slice(2);
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: site.name,
+  url: site.url,
+  description: site.description,
+  affiliation: { '@type': 'CollegeOrUniversity', name: 'Technische Hochschule Mannheim' },
+  sameAs: [social.github, social.linkedin].filter(Boolean),
+};
+---
+
+<Base jsonLd={jsonLd}>
+  <Hero />
+
+  <main id="main">
+    <Affiliations />
+
+    <section class="container focus" aria-labelledby="focus-label">
+      <h2 class="focus__label" id="focus-label">{focus.label}</h2>
+      <ul class="focus__grid">
+        {focus.items.map((item) => <li class="serif">{item}</li>)}
+      </ul>
+    </section>
+
+    <section class="container stack" id="about" aria-label="About">
+      {
+        about.map((story) =>
+          // One branch per kind: Astro treats a named slot as filled even when its condition is false.
+          story.visual === 'greeting' ? (
+            <StoryCard title={story.title} body={story.body}>
+              <Greeting slot="visual" />
+            </StoryCard>
+          ) : story.visual === 'harmonics' ? (
+            <StoryCard title={story.title} body={story.body}>
+              <Harmonics slot="visual" />
+            </StoryCard>
+          ) : (
+            <StoryCard title={story.title} body={story.body} image={story.image} />
+          ),
+        )
+      }
+    </section>
+
+    <section class="container" aria-labelledby="research">
+      <SectionHead title="Research" id="research" intro={research.intro} />
+      <div class="stack">
+        <Feature {...research.feature} ratio="21 / 9" />
+        <div class="card directions">
+          <h3 class="directions__title serif">{research.directions.title}</h3>
+          <ul class="directions__list">
+            {
+              research.directions.items.map((d) => (
+                <li>
+                  <p class="directions__name serif">{d.title}</p>
+                  <p class="directions__text">{d.body}</p>
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="container" aria-labelledby="work">
+      <SectionHead title="Selected work" id="work" />
+      <div class="stack">
+        {
+          lead && (
+            <Feature
+              title={lead.title}
+              body={[lead.summary]}
+              image={lead.image}
+              meta={projectMeta(lead)}
+              href={`/work/${lead.slug}/`}
+            />
+          )
+        }
+        {
+          rows.map((p, i) => (
+            <StoryCard
+              title={p.title}
+              body={[p.summary]}
+              image={p.image}
+              meta={projectMeta(p)}
+              href={`/work/${p.slug}/`}
+              reverse={i % 2 === 1}
+            />
+          ))
+        }
+        {
+          tiles.length > 0 && (
+            <div class="tiles">
+              {tiles.map((p) => (
+                <Tile title={p.title} body={p.summary} image={p.image} meta={projectMeta(p)} href={`/work/${p.slug}/`} />
+              ))}
+            </div>
+          )
+        }
+      </div>
+    </section>
+
+    <Contact />
+  </main>
+
+  <Footer />
+</Base>
+
+<style>
+  .focus {
+    padding-block: clamp(4.5rem, 8vw, 7rem) clamp(5rem, 9vw, 8rem);
+    text-align: center;
+  }
+
+  .focus__label {
+    font-size: 1rem;
+    font-weight: 400;
+    color: var(--c-text-2);
+    margin-bottom: clamp(2.5rem, 4.5vw, 3.75rem);
+  }
+
+  .focus__grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: clamp(2rem, 4vw, 3.25rem) 1.5rem;
+    margin-inline: auto;
+  }
+
+  .focus__grid li {
+    font-size: clamp(1.25rem, 2vw, 1.625rem);
+    white-space: nowrap;
+    font-weight: 500;
+    font-variation-settings: 'opsz' 48, 'SOFT' 0, 'WONK' 0;
+    letter-spacing: -0.01em;
+    line-height: 1.15;
+    color: rgba(255, 255, 255, 0.9);
+  }
+
+  .directions {
+    padding: clamp(1.5rem, 4vw, 3rem);
+  }
+
+  .directions__title {
+    font-size: var(--t-h3);
+    font-weight: 600;
+    font-variation-settings: 'opsz' 48, 'SOFT' 0, 'WONK' 0;
+    letter-spacing: -0.01em;
+    line-height: 1.05;
+    margin-bottom: clamp(1.5rem, 3vw, 2.25rem);
+  }
+
+  .directions__list {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.75rem clamp(1.5rem, 3vw, 2.5rem);
+  }
+
+  .directions__list li {
+    padding-top: 1.1rem;
+    border-top: 1px solid var(--c-line-strong);
+  }
+
+  .directions__name {
+    font-size: 1.25rem;
+    font-weight: 500;
+    font-variation-settings: 'opsz' 36, 'SOFT' 0, 'WONK' 0;
+    margin-bottom: 0.4rem;
+  }
+
+  .directions__text {
+    color: var(--c-text-2);
+    font-size: 0.9375rem;
+  }
+
+  .tiles {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--section-gap);
+  }
+
+  @media (max-width: 799px) {
+    .focus__grid {
+      grid-template-columns: 1fr;
+    }
+
+    .focus__grid li {
+      white-space: normal;
+    }
+
+    .directions__list,
+    .tiles {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

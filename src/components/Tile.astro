@@ -1,0 +1,80 @@
+---
+// Compact project block for pairs: image on top, text below.
+import type { Copy, SiteImage } from '../content/site';
+import Media from './Media.astro';
+import Text from './Text.astro';
+
+interface Props {
+  title: string;
+  body: Copy;
+  image: SiteImage;
+  href: string;
+  meta?: Copy[];
+}
+
+const { title, body, image, href, meta = [] } = Astro.props;
+---
+
+<article class="card tile">
+  <Media image={image} ratio="4 / 3" sizes="(max-width: 799px) 92vw, 450px" />
+  <div class="tile__body">
+    <h3 class="tile__title serif"><a href={href} class="tile__anchor">{title}</a></h3>
+    <p class="tile__text"><Text value={body} /></p>
+    {
+      meta.length > 0 && (
+        <ul class="tile__meta">
+          {meta.map((m) => (
+            <li>
+              <Text value={m} />
+            </li>
+          ))}
+        </ul>
+      )
+    }
+  </div>
+</article>
+
+<style>
+  .tile {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .tile__body {
+    padding: 1.6rem 0.25rem 0.25rem;
+  }
+
+  .tile__title {
+    font-size: var(--t-h3);
+    font-weight: 600;
+    font-variation-settings: 'opsz' 48, 'SOFT' 0, 'WONK' 0;
+    line-height: 1.05;
+    letter-spacing: -0.01em;
+    margin-bottom: 0.7rem;
+  }
+
+  .tile__text {
+    color: var(--c-text-2);
+  }
+
+  .tile__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 1.25rem;
+    margin-top: 1rem;
+    font-size: var(--t-small);
+    color: var(--c-text-3);
+  }
+
+  .tile__anchor::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: var(--r-card);
+  }
+
+  .tile:hover :global(.media img) {
+    transform: scale(1.03);
+  }
+</style>

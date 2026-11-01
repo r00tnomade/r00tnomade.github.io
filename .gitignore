@@ -1,0 +1,11 @@
+node_modules/
+dist/
+.astro/
+.DS_Store
+
+# Empty stub from before the project was set up; Astro does not use it.
+/index.html
+
+# Large originals. The site only uses the optimised WebP versions next to them.
+src/assets/images/about/about-hackathon.jpg
+src/assets/images/hero/hero-portrait.png

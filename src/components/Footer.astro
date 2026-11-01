@@ -1,0 +1,99 @@
+---
+import { footer, site, social } from '../content/site';
+import Icon from './Icon.astro';
+
+const year = new Date().getFullYear();
+const links = [
+  { name: 'github' as const, label: 'GitHub', href: social.github },
+  { name: 'linkedin' as const, label: 'LinkedIn', href: social.linkedin },
+  { name: 'mail' as const, label: 'Email', href: `mailto:${social.email}` },
+].filter((l) => l.href);
+---
+
+<footer class="footer">
+  <div class="footer__inner">
+    <div>
+      <p class="footer__mark serif">{site.name}</p>
+      <p class="footer__small">{footer.line}</p>
+      <p class="footer__small">
+        &copy;{year} {site.name}. All rights reserved.
+        {footer.links.map((l) => <a class="footer__legal" href={l.href}>{l.label}</a>)}
+      </p>
+    </div>
+    <ul class="footer__social">
+      {
+        links.map((l) => (
+          <li>
+            <a href={l.href} aria-label={l.label} rel={l.name === 'mail' ? undefined : 'me noopener'} target={l.name === 'mail' ? undefined : '_blank'}>
+              <Icon name={l.name} size={26} />
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    margin-top: clamp(5rem, 9vw, 6.5rem);
+    border-top: 1px solid var(--c-line-strong);
+  }
+
+  .footer__inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 2rem;
+    padding: 2.5rem var(--gutter) 2.75rem;
+  }
+
+  .footer__mark {
+    font-size: clamp(1.125rem, 2vw, 1.5rem);
+    font-weight: 500;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    line-height: 1;
+    margin-bottom: 1.6rem;
+  }
+
+  .footer__small {
+    font-size: 0.75rem;
+    line-height: 1.55;
+    color: var(--c-text-2);
+  }
+
+  .footer__legal {
+    margin-left: 1rem;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  .footer__social {
+    display: flex;
+    gap: 1.25rem;
+  }
+
+  .footer__social a {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    transition: opacity 0.25s;
+  }
+
+  .footer__social a:hover {
+    opacity: 0.6;
+  }
+
+  @media (max-width: 599px) {
+    .footer__inner {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .footer__social {
+      margin-left: -10px;
+    }
+  }
+</style>

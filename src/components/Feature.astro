@@ -1,0 +1,105 @@
+---
+// Large image-led block: a wide photograph with title and text beneath.
+import type { Copy, SiteImage } from '../content/site';
+import Media from './Media.astro';
+import Text from './Text.astro';
+
+interface Props {
+  title: string;
+  body: Copy[];
+  image: SiteImage;
+  ratio?: string;
+  meta?: Copy[];
+  href?: string;
+  linkLabel?: string;
+}
+
+const { title, body, image, ratio = '16 / 9', meta = [], href, linkLabel = 'View project' } = Astro.props;
+---
+
+<article class:list={['card', 'feature', { 'feature--link': href }]}>
+  <Media image={image} ratio={ratio} sizes="(max-width: 1040px) 92vw, 930px" widths={[640, 960, 1400, 1920]} />
+  <div class="feature__body">
+    <div>
+      <h3 class="feature__title serif">
+        {href ? <a href={href} class="feature__anchor">{title}</a> : title}
+      </h3>
+      {
+        meta.length > 0 && (
+          <ul class="feature__meta">
+            {meta.map((m) => (
+              <li>
+                <Text value={m} />
+              </li>
+            ))}
+          </ul>
+        )
+      }
+    </div>
+    <div>
+      {body.map((p) => <p class="feature__text"><Text value={p} /></p>)}
+      {href && <span class="feature__more text-link" aria-hidden="true">{linkLabel}</span>}
+    </div>
+  </div>
+</article>
+
+<style>
+  .feature {
+    position: relative;
+  }
+
+  .feature__body {
+    display: grid;
+    grid-template-columns: 5fr 7fr;
+    gap: 1.5rem clamp(1.5rem, 4vw, 3rem);
+    padding: clamp(1.5rem, 3vw, 2.25rem) clamp(0.25rem, 1vw, 0.5rem) clamp(0.25rem, 1vw, 0.75rem);
+  }
+
+  .feature__title {
+    font-size: clamp(1.75rem, 3vw, 2.25rem);
+    font-weight: 600;
+    font-variation-settings: 'opsz' 72, 'SOFT' 0, 'WONK' 0;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+  }
+
+  .feature__meta {
+    display: grid;
+    gap: 0.2rem;
+    margin-top: 0.9rem;
+    font-size: var(--t-small);
+    color: var(--c-text-3);
+  }
+
+  .feature__text {
+    color: var(--c-text-2);
+  }
+
+  .feature__text + .feature__text {
+    margin-top: 0.8rem;
+  }
+
+  .feature__more {
+    display: inline-block;
+    margin-top: 1.25rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+  }
+
+  .feature__anchor::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: var(--r-card);
+  }
+
+  .feature--link:hover :global(.media img) {
+    transform: scale(1.025);
+  }
+
+  @media (max-width: 799px) {
+    .feature__body {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

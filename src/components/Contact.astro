@@ -1,0 +1,131 @@
+---
+import { contact, social } from '../content/site';
+import SectionHead from './SectionHead.astro';
+import Text from './Text.astro';
+
+// Short, readable names instead of raw addresses.
+const rows = [
+  { label: 'Email', text: social.email, href: `mailto:${social.email}`, external: false },
+  { label: 'LinkedIn', text: 'Sami Adam Moughli', href: social.linkedin, external: true },
+  { label: 'GitHub', text: 'r00tnomade', href: social.github, external: true },
+].filter((r) => r.href);
+---
+
+<section class="container contact" aria-labelledby="contact">
+  <SectionHead title={contact.title} id="contact" />
+  <div class="card contact__card">
+    <div class="contact__intro">
+      <p class="contact__lead serif">{contact.lead}</p>
+      <p class="contact__text"><Text value={contact.body} /></p>
+    </div>
+    <ul class="contact__list">
+      {
+        rows.map((r) => (
+          <li>
+            <a class="contact__row" href={r.href} rel={r.external ? 'me noopener' : undefined} target={r.external ? '_blank' : undefined}>
+              <span class="contact__label">{r.label}</span>
+              <span class="contact__value serif">{r.text}</span>
+              <svg class="contact__arrow" width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                {r.external ? <path d="M5 13L13 5M6.5 5H13v6.5" /> : <path d="M3 9h12M10.5 4.5L15 9l-4.5 4.5" />}
+              </svg>
+              {r.external && <span class="visually-hidden"> (opens in a new tab)</span>}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  .contact__card {
+    display: grid;
+    grid-template-columns: 5fr 7fr;
+    gap: 2rem clamp(2rem, 5vw, 4rem);
+    align-items: center;
+    padding: clamp(1.75rem, 4.5vw, 3.5rem);
+  }
+
+  .contact__lead {
+    font-size: clamp(1.75rem, 3vw, 2.25rem);
+    font-weight: 600;
+    font-variation-settings: 'opsz' 72, 'SOFT' 0, 'WONK' 0;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.9rem;
+  }
+
+  .contact__text {
+    color: var(--c-text-2);
+    max-width: 26rem;
+  }
+
+  .contact__list li + li {
+    border-top: 1px solid var(--c-line);
+  }
+
+  .contact__row {
+    display: grid;
+    grid-template-columns: 6rem 1fr auto;
+    align-items: center;
+    gap: 1rem;
+    padding-block: 1.3rem;
+    transition: padding 0.5s var(--ease);
+  }
+
+  .contact__label {
+    font-size: var(--t-small);
+    color: var(--c-text-3);
+    transition: color 0.3s;
+  }
+
+  .contact__value {
+    font-size: clamp(1.125rem, 1.8vw, 1.375rem);
+    font-variation-settings: 'opsz' 36, 'SOFT' 0, 'WONK' 0;
+    overflow-wrap: anywhere;
+  }
+
+  .contact__arrow {
+    color: var(--c-text-3);
+    transition: color 0.3s, transform 0.5s var(--ease);
+  }
+
+  .contact__row:hover .contact__label,
+  .contact__row:hover .contact__arrow,
+  .contact__row:focus-visible .contact__arrow {
+    color: var(--c-text);
+  }
+
+  .contact__row:hover {
+    padding-left: 0.5rem;
+  }
+
+  .contact__row:hover .contact__arrow {
+    transform: translate(3px, -3px);
+  }
+
+  @media (max-width: 799px) {
+    .contact__card {
+      grid-template-columns: 1fr;
+      align-items: start;
+    }
+
+    .contact__row {
+      grid-template-columns: 1fr auto;
+      gap: 0.15rem 1rem;
+    }
+
+    .contact__label {
+      grid-column: 1;
+    }
+
+    .contact__value {
+      grid-column: 1;
+    }
+
+    .contact__arrow {
+      grid-column: 2;
+      grid-row: 1 / span 2;
+    }
+  }
+</style>

@@ -1,0 +1,74 @@
+---
+// Two logos on the black page, directly beneath the hero. No labels or boxes.
+import { Image } from 'astro:assets';
+import { affiliations } from '../content/site';
+import { resolveImage } from '../lib/images';
+
+const items = await Promise.all(
+  affiliations.map(async (a) => {
+    const src = await resolveImage(a.image.src);
+    return { ...a, src, width: Math.round((a.height * src.width) / src.height) };
+  }),
+);
+---
+
+<section class="affiliations" aria-label="Affiliations">
+  <ul class="affiliations__list">
+    {
+      items.map((a) => (
+        <li class="affiliations__item" style={`--h: ${a.height}px`} title={a.name}>
+          <Image
+            src={a.src}
+            alt={a.image.alt}
+            width={a.width}
+            height={a.height}
+            densities={[1, 2, 3]}
+            format="png"
+            loading="lazy"
+            decoding="async"
+          />
+        </li>
+      ))
+    }
+  </ul>
+</section>
+
+<style>
+  .affiliations {
+    padding: clamp(3.5rem, 7vw, 5.5rem) var(--gutter) 0;
+  }
+
+  .affiliations__list {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 2.25rem clamp(3rem, 9vw, 8.5rem);
+  }
+
+  .affiliations__item {
+    display: grid;
+    place-items: center;
+  }
+
+  .affiliations__item :global(img) {
+    height: var(--h);
+    width: auto;
+    max-width: 100%;
+    opacity: 0.8;
+  }
+
+  @media (max-width: 599px) {
+    .affiliations__item {
+      --s: 0.74;
+    }
+
+    .affiliations__item :global(img) {
+      height: calc(var(--h) * var(--s));
+    }
+
+    .affiliations__list {
+      gap: 1.75rem 2.75rem;
+    }
+  }
+</style>

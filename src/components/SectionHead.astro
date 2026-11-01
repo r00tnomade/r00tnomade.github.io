@@ -1,0 +1,48 @@
+---
+// The reference's section transition: a thin vertical line, then a centred title.
+interface Props {
+  title: string;
+  id?: string;
+  intro?: string;
+}
+
+const { title, id, intro } = Astro.props;
+---
+
+<div class="head">
+  <span class="head__line" aria-hidden="true"></span>
+  <h2 class="head__title serif" id={id}>{title}</h2>
+  {intro && <p class="head__intro">{intro}</p>}
+</div>
+
+<style>
+  .head {
+    display: grid;
+    justify-items: center;
+    padding-block: clamp(2.5rem, 4vw, 2.5rem) clamp(2rem, 3.5vw, 2.5rem);
+    text-align: center;
+  }
+
+  .head__line {
+    width: 1px;
+    height: clamp(80px, 9vw, 128px);
+    margin-bottom: clamp(2.5rem, 4.5vw, 4rem);
+    background: linear-gradient(to bottom, transparent, rgba(255, 255, 255, 0.32) 50%, transparent);
+  }
+
+  .head__title {
+    font-size: var(--t-h2);
+    font-weight: 600;
+    font-variation-settings: 'opsz' 72, 'SOFT' 0, 'WONK' 0;
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+    scroll-margin-top: 2rem;
+  }
+
+  .head__intro {
+    max-width: 34rem;
+    margin-top: 1.1rem;
+    color: var(--c-text-2);
+    font-size: 1.0625rem;
+  }
+</style>

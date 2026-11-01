@@ -1,0 +1,89 @@
+---
+// Studies visual: a square wave rebuilt from 1, 2, 4 and 12 sine waves (Fourier synthesis),
+// drawn edge to edge behind the card and fading out before it reaches the text. The axis
+// is the same kind of hairline horizon the About card uses. Paths are computed at build time.
+const W = 900;
+const H = 300;
+const mid = H / 2;
+const amp = 70;
+const span = 6 * Math.PI; // three periods across the width
+const steps = 900;
+const harmonics = [1, 2, 4, 12];
+const opacities = [0.12, 0.2, 0.36, 0.7];
+const caption = 'A square wave built from 1, 2, 4 and 12 sine waves';
+
+const partial = (n: number, t: number) => {
+  let sum = 0;
+  for (let k = 1; k <= n; k++) sum += Math.sin((2 * k - 1) * t) / (2 * k - 1);
+  return (4 / Math.PI) * sum;
+};
+const curve = (n: number) =>
+  Array.from({ length: steps + 1 }, (_, i) => {
+    const t = (i / steps) * span;
+    return `${i ? 'L' : 'M'}${((t / span) * W).toFixed(1)} ${(mid - amp * partial(n, t)).toFixed(1)}`;
+  }).join('');
+---
+
+<figure class="harmonics" role="img" aria-label={caption}>
+  <svg viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">
+    <line class="axis" x1="0" x2={W} y1={mid} y2={mid} />
+    {
+      harmonics.map((n, i) => (
+        <path class="curve" d={curve(n)} pathLength="1" style={`--i:${i}; opacity:${opacities[i]}`} />
+      ))
+    }
+  </svg>
+</figure>
+
+<style>
+  /* Fills the card (the stage is unpositioned on desktop) or the stage plus its padding (mobile). */
+  .harmonics {
+    position: absolute;
+    inset: calc(-1 * var(--pad-card));
+    margin: 0;
+    pointer-events: none;
+    background: radial-gradient(55% 95% at 22% 50%, rgba(255, 255, 255, 0.05), transparent 70%);
+    mask-image: linear-gradient(to right, transparent, #000 7%, #000 28%, transparent 49%);
+  }
+
+  svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  .axis {
+    stroke: #fff;
+    stroke-opacity: 0.16;
+    stroke-width: 1;
+    vector-effect: non-scaling-stroke;
+  }
+
+  .curve {
+    fill: none;
+    stroke: #fff;
+    stroke-width: 1;
+    stroke-linejoin: round;
+    stroke-dasharray: 1;
+    stroke-dashoffset: 0;
+    vector-effect: non-scaling-stroke;
+  }
+
+  /* Stacked layout: the visual sits above the text, so it fades at both sides instead. */
+  @media (max-width: 799px) {
+    .harmonics {
+      mask-image: linear-gradient(to right, transparent, #000 14%, #000 86%, transparent);
+    }
+  }
+
+  /* The curves draw in one after another as the card arrives. */
+  @media (prefers-reduced-motion: no-preference) {
+    .curve {
+      transition: stroke-dashoffset 2.6s calc(0.35s + var(--i) * 0.3s) var(--ease);
+    }
+
+    :global(.js:not(.reveal-all) .card:not(.is-in)) .curve {
+      stroke-dashoffset: 1;
+    }
+  }
+</style>

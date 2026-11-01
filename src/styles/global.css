@@ -1,0 +1,258 @@
+@import '@fontsource-variable/fraunces/full.css';
+@import '@fontsource-variable/inter/index.css';
+@import '@fontsource-variable/mona-sans/wdth.css';
+/* Only downloaded when Arabic characters appear (the About greeting). */
+@import '@fontsource-variable/noto-naskh-arabic/index.css';
+
+/* ---------- Design tokens ---------- */
+:root {
+  /* Colour: pure black canvas, white type at measured opacities. */
+  --c-black: #000;
+  --c-card-hi: #181818;
+  --c-card-lo: #0c0c0c;
+  --c-line: rgba(255, 255, 255, 0.08);
+  --c-line-strong: rgba(255, 255, 255, 0.14);
+  --c-text: #fff;
+  --c-text-2: rgba(255, 255, 255, 0.72);
+  --c-text-3: rgba(255, 255, 255, 0.5);
+  --c-ink: rgba(20, 26, 34, 0.86);
+  --c-hero-name: #a8a8a8; /* blended with `difference` over the photograph */
+
+  /* Type */
+  --f-display: 'Fraunces Variable', 'Iowan Old Style', Georgia, serif;
+  --f-label: 'Mona Sans Variable', 'Helvetica Neue', Arial, sans-serif;
+  --f-body: 'Inter Variable', -apple-system, 'Segoe UI', sans-serif;
+
+  --t-hero: clamp(2.75rem, 7.3vw, 8rem);
+  --t-h1: clamp(2.5rem, 5.4vw, 4.75rem);
+  --t-h2: clamp(2rem, 3.4vw, 2.625rem);
+  --t-h3: clamp(1.5rem, 2.2vw, 1.75rem);
+  --t-lead: clamp(1.25rem, 1.8vw, 1.5rem);
+  --t-body: 1rem;
+  --t-small: 0.8125rem;
+
+  /* Layout */
+  --w-content: 1000px;
+  --w-wide: 1200px;
+  --gutter: clamp(1rem, 4vw, 2.5rem);
+  --r-card: 20px;
+  --r-media: 14px;
+  --pad-card: clamp(1.25rem, 3vw, 2.25rem);
+  --section-gap: clamp(1.25rem, 2.4vw, 1.75rem);
+
+  --shadow-card: 0 30px 80px -40px rgba(255, 255, 255, 0.07), 0 20px 40px -20px rgba(0, 0, 0, 0.9);
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ---------- Base ---------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: var(--c-black);
+  color: var(--c-text);
+  font-family: var(--f-body);
+  font-size: var(--t-body);
+  line-height: 1.65;
+  font-optical-sizing: auto;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+img,
+picture {
+  display: block;
+  max-width: 100%;
+}
+
+h1,
+h2,
+h3,
+p,
+figure,
+dl,
+dd,
+ul {
+  margin: 0;
+}
+
+ul {
+  padding: 0;
+  list-style: none;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 4px;
+  border-radius: 4px;
+}
+
+::selection {
+  background: #fff;
+  color: #000;
+}
+
+.serif {
+  font-family: var(--f-display);
+  font-variation-settings: 'SOFT' 0, 'WONK' 0;
+}
+
+.container {
+  width: min(100% - 2 * var(--gutter), var(--w-content));
+  margin-inline: auto;
+}
+
+.container--wide {
+  width: min(100% - 2 * var(--gutter), var(--w-wide));
+  margin-inline: auto;
+}
+
+/* The one surface used throughout: a dark card with a hairline edge. */
+.card {
+  background: linear-gradient(160deg, var(--c-card-hi), var(--c-card-lo) 70%);
+  border: 1px solid var(--c-line);
+  border-radius: var(--r-card);
+  padding: var(--pad-card);
+  box-shadow: var(--shadow-card);
+}
+
+.stack {
+  display: grid;
+  gap: var(--section-gap);
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.skip-link {
+  position: absolute;
+  left: 1rem;
+  top: -4rem;
+  z-index: 100;
+  padding: 0.6rem 1rem;
+  background: #fff;
+  color: #000;
+  border-radius: 6px;
+  font-size: 0.875rem;
+}
+
+.skip-link:focus {
+  top: 1rem;
+}
+
+/* Text link with a quiet underline that fills in on hover. */
+.text-link {
+  background: linear-gradient(currentColor, currentColor) 0 100% / 100% 1px no-repeat;
+  padding-bottom: 2px;
+  transition: background-size 0.4s var(--ease), opacity 0.2s;
+}
+
+.text-link:hover {
+  opacity: 0.75;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ---------- Motion ---------- */
+/* Fade between pages (supported browsers only; others navigate normally). */
+@view-transition {
+  navigation: auto;
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 0.45s;
+  animation-timing-function: var(--ease);
+}
+
+/*
+ * Scroll reveals. Hidden states only apply when JS is running (html.js) and
+ * motion is allowed; a failsafe class (html.reveal-all) shows everything if
+ * the script does not load. src/lib/motion.ts adds `.is-in` as items enter.
+ */
+@media (prefers-reduced-motion: no-preference) {
+  .js:not(.reveal-all) :is(
+      .card,
+      .head__title,
+      .head__intro,
+      .focus__label,
+      .focus__grid li,
+      .directions__list li,
+      .contact__row,
+      .detail__head > *,
+      .detail__media,
+      .detail__section,
+      .detail__next
+    ) {
+    transition: opacity 1.1s var(--ease), translate 1.2s var(--ease);
+  }
+
+  .js:not(.reveal-all) :is(
+      .card,
+      .head__title,
+      .head__intro,
+      .focus__label,
+      .focus__grid li,
+      .directions__list li,
+      .contact__row,
+      .detail__head > *,
+      .detail__media,
+      .detail__section,
+      .detail__next
+    ):not(.is-in) {
+    opacity: 0;
+    translate: 0 36px;
+  }
+
+  /* Photographs settle from a slight zoom as their card arrives. */
+  .js:not(.reveal-all) .card:not(.is-in) .media img,
+  .js:not(.reveal-all) .detail__media:not(.is-in) .media img {
+    scale: 1.14;
+  }
+
+  /* Section lines draw downward. */
+  .js:not(.reveal-all) .head__line,
+  .js:not(.reveal-all) .head-line {
+    transform-origin: top;
+    transition: transform 1.6s var(--ease), opacity 1.6s var(--ease);
+  }
+
+  .js:not(.reveal-all) .head__line:not(.is-in),
+  .js:not(.reveal-all) .head-line:not(.is-in) {
+    transform: scaleY(0);
+    opacity: 0;
+  }
+}

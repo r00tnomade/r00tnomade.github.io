@@ -1,0 +1,58 @@
+---
+// Responsive, optimised image with a fixed aspect ratio and a dark backdrop
+// while loading. Crop is controlled by `position` in site.ts.
+import { Picture } from 'astro:assets';
+import type { SiteImage } from '../content/site';
+import { resolveImage } from '../lib/images';
+
+interface Props {
+  image: SiteImage;
+  ratio: string;
+  sizes: string;
+  widths?: number[];
+  eager?: boolean;
+  class?: string;
+}
+
+const { image, ratio, sizes, widths = [480, 800, 1200, 1600], eager = false, class: className } = Astro.props;
+const src = await resolveImage(image.src);
+const usable = widths.filter((w) => w <= src.width);
+---
+
+<div class:list={['media', className]} style={`--ratio: ${ratio}`}>
+  <Picture
+    src={src}
+    alt={image.alt}
+    widths={usable.length ? usable : [src.width]}
+    sizes={sizes}
+    formats={['avif', 'webp']}
+    fallbackFormat="webp"
+    loading={eager ? 'eager' : 'lazy'}
+    fetchpriority={eager ? 'high' : 'auto'}
+    decoding="async"
+    style={image.position ? `object-position: ${image.position}` : undefined}
+  />
+</div>
+
+<style>
+  .media {
+    position: relative;
+    aspect-ratio: var(--ratio);
+    overflow: hidden;
+    border-radius: var(--r-media);
+    background: #141414;
+  }
+
+  .media :global(picture) {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  .media :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 1.2s var(--ease), scale 1.8s var(--ease);
+  }
+</style>

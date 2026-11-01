@@ -1,0 +1,153 @@
+---
+// Image-and-text row inside a dark card, as on the reference.
+// With `href`, the whole card links to a detail page.
+import type { Copy, SiteImage } from '../content/site';
+import Media from './Media.astro';
+import Text from './Text.astro';
+
+interface Props {
+  title: string;
+  body: Copy[];
+  /** A photograph. Use the `visual` slot instead for a drawn or typeset visual. */
+  image?: SiteImage;
+  reverse?: boolean;
+  href?: string;
+  meta?: Copy[];
+  linkLabel?: string;
+}
+
+const { title, body, image, reverse = false, href, meta = [], linkLabel = 'View project' } = Astro.props;
+---
+
+<article class:list={['card', 'story', { 'story--reverse': reverse, 'story--link': href, 'story--stage': Astro.slots.has('visual') }]}>
+  {
+    Astro.slots.has('visual') ? (
+      <div class="story__media story__visual">
+        <slot name="visual" />
+      </div>
+    ) : (
+      image && <Media image={image} ratio="445 / 277" sizes="(max-width: 799px) 92vw, 445px" class="story__media" />
+    )
+  }
+  <div class="story__body">
+    <h3 class="story__title serif">
+      {href ? <a href={href} class="story__anchor">{title}</a> : title}
+    </h3>
+    {body.map((p) => <p class="story__text"><Text value={p} /></p>)}
+    {
+      meta.length > 0 && (
+        <ul class="story__meta">
+          {meta.map((m) => (
+            <li>
+              <Text value={m} />
+            </li>
+          ))}
+        </ul>
+      )
+    }
+    {href && <span class="story__more text-link" aria-hidden="true">{linkLabel}</span>}
+  </div>
+</article>
+
+<style>
+  .story {
+    display: grid;
+    grid-template-columns: minmax(0, 445fr) minmax(0, 445fr);
+    align-items: center;
+    gap: clamp(1.5rem, 3.8vw, 2.4rem);
+    position: relative;
+  }
+
+  .story--reverse :global(.story__media) {
+    order: 2;
+  }
+
+  /* A typeset or drawn visual has no frame of its own: it holds the photo's place in
+     the grid and paints straight onto the card, which clips whatever bleeds past it. */
+  .story--stage {
+    overflow: hidden;
+  }
+
+  .story__visual {
+    aspect-ratio: 445 / 277;
+  }
+
+  .story__body {
+    position: relative;
+    z-index: 1;
+    padding-inline-end: clamp(0rem, 1.5vw, 1rem);
+  }
+
+  .story--reverse .story__body {
+    padding-inline: clamp(0rem, 1.5vw, 1rem) 0;
+  }
+
+  .story__title {
+    font-size: var(--t-h3);
+    font-weight: 600;
+    font-variation-settings: 'opsz' 48, 'SOFT' 0, 'WONK' 0;
+    line-height: 1.05;
+    letter-spacing: -0.01em;
+    margin-bottom: 0.85rem;
+  }
+
+  .story__text {
+    color: var(--c-text-2);
+    max-width: 30rem;
+  }
+
+  .story__text + .story__text {
+    margin-top: 0.8rem;
+  }
+
+  .story__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 1.25rem;
+    margin-top: 1.1rem;
+    font-size: var(--t-small);
+    color: var(--c-text-3);
+  }
+
+  .story__more {
+    display: inline-block;
+    margin-top: 1.25rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+  }
+
+  /* Whole-card link without nesting interactive content. */
+  .story__anchor::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: var(--r-card);
+  }
+
+  .story--link:hover :global(.media img) {
+    transform: scale(1.03);
+  }
+
+  .story--link:hover .story__more {
+    opacity: 0.75;
+  }
+
+  @media (max-width: 799px) {
+    .story {
+      grid-template-columns: 1fr;
+    }
+
+    .story--reverse :global(.story__media) {
+      order: 0;
+    }
+
+    .story__visual {
+      position: relative;
+    }
+
+    .story__body,
+    .story--reverse .story__body {
+      padding: 0 0.25rem 0.25rem;
+    }
+  }
+</style>

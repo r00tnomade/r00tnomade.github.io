@@ -1,0 +1,103 @@
+---
+// About visual: "Hello" in the four languages listed on the CV, set straight onto the
+// card. A hairline horizon and a low dusk light (the same light as the hero) sit under
+// the words, and the light spills past the visual's area into the rest of the card.
+const words = [
+  { text: 'Hallo', lang: 'de' },
+  { text: 'Hello', lang: 'en' },
+  { text: 'Bonjour', lang: 'fr' },
+  { text: 'مرحبا', lang: 'ar', dir: 'rtl' },
+];
+---
+
+<figure class="greeting" role="img" aria-label="“Hello” in German, English, French and Arabic">
+  <span class="greeting__glow" aria-hidden="true"></span>
+  <span class="greeting__horizon" aria-hidden="true"></span>
+  <div class="greeting__words" aria-hidden="true">
+    {words.map((w) => <p class="greeting__word" lang={w.lang} dir={w.dir}>{w.text}</p>)}
+  </div>
+</figure>
+
+<style>
+  .greeting {
+    position: relative;
+    height: 100%;
+    margin: 0;
+  }
+
+  /* The hero's dusk, centred on the horizon and wider than the visual itself. */
+  .greeting__glow {
+    position: absolute;
+    left: -60%;
+    bottom: -45%;
+    width: 220%;
+    height: 130%;
+    background: radial-gradient(
+      closest-side,
+      rgba(214, 124, 78, 0.2),
+      rgba(214, 124, 78, 0.07) 55%,
+      transparent
+    );
+    pointer-events: none;
+  }
+
+  .greeting__horizon {
+    position: absolute;
+    top: 82%;
+    left: calc(-1 * var(--pad-card));
+    width: calc(100% + 2 * var(--pad-card));
+    height: 1px;
+    background: linear-gradient(to right, rgba(255, 255, 255, 0.26), rgba(255, 255, 255, 0.08) 70%, transparent);
+    pointer-events: none;
+  }
+
+  .greeting__words {
+    --size: clamp(1.75rem, 2.9vw, 2.6rem);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    height: 100%;
+    padding-bottom: 20%;
+  }
+
+  .greeting__word {
+    margin: 0;
+    text-align: left;
+    font-family: var(--f-display);
+    font-size: var(--size);
+    font-weight: 500;
+    font-variation-settings: 'opsz' 144, 'SOFT' 0, 'WONK' 0;
+    line-height: 1.02;
+    letter-spacing: -0.02em;
+    color: #fff;
+  }
+
+  .greeting__word:nth-child(2) {
+    opacity: 0.66;
+  }
+
+  .greeting__word:nth-child(3) {
+    opacity: 0.46;
+  }
+
+  .greeting__word:nth-child(4) {
+    font-family: 'Noto Naskh Arabic Variable', var(--f-display);
+    font-size: calc(var(--size) * 1.12);
+    line-height: 1.2;
+    letter-spacing: 0;
+    opacity: 0.32;
+  }
+
+  /* Stacked layout: the visual is as wide as the card, so the type grows with it. */
+  @media (max-width: 799px) {
+    .greeting__words {
+      --size: clamp(1.75rem, 7.4vw, 3.5rem);
+    }
+  }
+
+  /* The light also spills a little way outside the card, like it does under the hero. */
+  :global(.story--stage:has(.greeting)) {
+    box-shadow: 0 20px 40px -20px rgba(0, 0, 0, 0.9), -40px 40px 110px -45px rgba(214, 124, 78, 0.22);
+  }
+</style>

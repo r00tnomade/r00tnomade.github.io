@@ -1,0 +1,30 @@
+---
+// Renders a piece of copy from site.ts. Placeholder copy (todo('…')) is shown
+// muted with a dashed underline so it is easy to find before launch.
+import type { Copy } from '../content/site';
+
+interface Props {
+  value: Copy;
+}
+
+const { value } = Astro.props;
+---
+
+{
+  typeof value === 'string' ? (
+    <Fragment set:text={value} />
+  ) : (
+    <span class="todo" title="Placeholder: edit in src/content/site.ts">
+      {value.todo}
+    </span>
+  )
+}
+
+<style>
+  .todo {
+    color: var(--c-text-3);
+    text-decoration: underline dashed rgba(255, 255, 255, 0.28);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.3em;
+  }
+</style>

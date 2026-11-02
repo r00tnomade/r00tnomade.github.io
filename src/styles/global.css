@@ -256,3 +256,87 @@ a {
     opacity: 0;
   }
 }
+
+/* ---------- Custom cursor (mouse only; see src/lib/cursor.ts) ---------- */
+.cursor-dot,
+.cursor-ring {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s;
+  /* A hairline dark halo keeps white readable over light photographs. */
+  filter: drop-shadow(0 0 1px rgba(0, 0, 0, 0.55)) drop-shadow(0 0 3px rgba(0, 0, 0, 0.25));
+}
+
+.cursor-dot::before,
+.cursor-ring::before {
+  content: '';
+  position: absolute;
+  border-radius: 50%;
+  transition: width 0.45s var(--ease), height 0.45s var(--ease), margin 0.45s var(--ease),
+    background-color 0.3s, border-color 0.3s;
+}
+
+.cursor-dot::before {
+  width: 6px;
+  height: 6px;
+  margin: -3px 0 0 -3px;
+  background: #fff;
+}
+
+.cursor-ring::before {
+  width: 34px;
+  height: 34px;
+  margin: -17px 0 0 -17px;
+  border: 1px solid rgba(255, 255, 255, 0.85);
+}
+
+.has-cursor .cursor-dot,
+.has-cursor .cursor-ring {
+  opacity: 1;
+}
+
+/* Over links and buttons the ring opens up and the dot steps back. */
+.cursor-link .cursor-ring::before {
+  width: 60px;
+  height: 60px;
+  margin: -30px 0 0 -30px;
+  background: rgba(255, 255, 255, 0.08);
+  border-color: #fff;
+}
+
+.cursor-link .cursor-dot::before {
+  width: 4px;
+  height: 4px;
+  margin: -2px 0 0 -2px;
+}
+
+.cursor-down .cursor-ring::before {
+  width: 26px;
+  height: 26px;
+  margin: -13px 0 0 -13px;
+}
+
+.cursor-down.cursor-link .cursor-ring::before {
+  width: 48px;
+  height: 48px;
+  margin: -24px 0 0 -24px;
+}
+
+/* Hide the system cursor only once ours is visible, so it never disappears without a replacement. */
+@media (hover: hover) and (pointer: fine) {
+  .has-cursor,
+  .has-cursor * {
+    cursor: none !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cursor-dot::before,
+  .cursor-ring::before {
+    transition: none;
+  }
+}

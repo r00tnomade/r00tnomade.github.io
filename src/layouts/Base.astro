@@ -52,6 +52,7 @@ const ogImage = new URL(image, Astro.site);
     <slot />
     <script>
       import '../lib/motion';
+      import '../lib/cursor';
       (window as unknown as { __motionReady: boolean }).__motionReady = true;
     </script>
   </body>
